@@ -137,3 +137,79 @@ with open("input-day13.txt") as f:
     print(total(data))
 
 # %%
+
+p2 = set((2 ** n for n in range(30)))
+# %%
+test_data
+# %%
+
+def check_symetrie(line:list[int], start:int, stop:int) -> bool:
+    if line[start] != line[stop] and line[start] ^ line[stop] not in p2:
+        return False
+    has_change = line[start] ^ line[stop] in p2
+    start += 1
+    stop -= 1
+    while start < stop:
+        if line[start] != line[stop]:
+            if has_change or line[start] ^ line[stop] not in p2:
+                return False
+            else:
+                has_change = True
+        start += 1
+        stop -= 1
+    return has_change    
+
+#%%
+
+assert check_symetrie(test_data[0][0],1, 8) == False
+assert check_symetrie(test_data[0][0],1, 6) == False
+assert check_symetrie(test_data[0][1],0, 5) == True
+assert check_symetrie(test_data[0][1],1, 6) == False
+
+assert check_symetrie(test_data[1][0],0, 4) == False
+assert check_symetrie(test_data[1][0],1, 6) == False
+assert check_symetrie(test_data[1][1],0, 1) == True
+assert check_symetrie(test_data[1][1],3, 6) == False
+
+#%%
+
+
+def find_symetrie_bis(line:list[int]) -> int:
+    """Search for mirror, mirror are supposed between column"""
+    # check from left
+    for p in range(1, len(line), 2):
+        if check_symetrie(line, 0, p):
+            return p//2 + 1
+
+    for p in range(len(line) - 2, 0, -2):
+        if check_symetrie(line, p, len(line)-1):
+            return p + (len(line) - p)//2
+    
+    return 0
+
+assert find_symetrie_bis(test_data[0][0]) == 0
+assert find_symetrie_bis(test_data[0][1]) == 3
+assert find_symetrie_bis(test_data[1][0]) == 0
+assert find_symetrie_bis(test_data[1][1]) == 1
+assert find_symetrie_bis(list(reversed(test_data[0][1]))) == 4
+assert find_symetrie_bis(list(reversed(test_data[1][1]))) == 6
+# %%
+
+def total2(data):
+    score = 0
+    for line, column in data:
+          score += find_symetrie_bis(line) + 100 * find_symetrie_bis(column)
+    
+    return score
+
+print(total2(test_data))
+
+# %%
+
+with open("input-day13.txt") as f:
+    data = read_input(f)
+
+    print(total2(data))
+
+
+# %%

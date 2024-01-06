@@ -110,12 +110,12 @@ class ABR:
             if self.left.est_feuille:
                 self.left = ABR(dest, source, length)
             else:
-                self.left.insert(dest, source, length)
+                self.left.insert(dest, source, length) # type: ignore
         else:
             if self.right.est_feuille:
                 self.right = ABR(dest, source, length)
             else:
-                self.right.insert(dest, source, length)
+                self.right.insert(dest, source, length) # type: ignore
 
     def __getitem__(self, n):
         if n < self.source:
